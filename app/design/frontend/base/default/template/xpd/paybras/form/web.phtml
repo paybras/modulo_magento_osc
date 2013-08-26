@@ -1,0 +1,28 @@
+<?php
+/**
+ * Paybras Web
+ *
+ * @category   Payments
+ * @package    Xpd_Paybrasweb
+ * @license    OSL v3.0
+ */
+ ?>
+ <?php
+    $_code = $this->getMethodCode();
+    //feito para ter compatibilidade com o OneStepCheckout
+    $route = $this->getRequest()->getRequestedRouteName();
+    if($route == 'onestepcheckout') {
+        $fieldCode = '['.$_code.']';
+    }
+    else {
+        $fieldCode = '';
+    };
+?>
+<fieldset class="form-list">
+<ul id="payment_form_<?php echo $_code; ?>" style="display:none;">
+	<li>
+		<!--p><img src="<?php echo $this->getSkinUrl(); ?>"/></p-->
+		<p><?php echo Mage::getStoreConfig('payment/paybrasweb/textweb'); ?></p>
+	</li>
+</ul>
+</fieldset>

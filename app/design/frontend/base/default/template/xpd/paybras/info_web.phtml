@@ -1,0 +1,25 @@
+<?php
+/**
+ * Paybras Web
+ *
+ * @category   Payments
+ * @package    Xpd_Paybrasweb
+ * @license    OSL v3.0
+ */
+ ?>
+
+<?php if(!$this->returnTransaction()): ?>
+<?php if($this->returnUrlToRedirect() && $this->getRequest()->getControllerName() != 'onepage' && $this->getRequest()->getControllerName() != 'onepagecheckout'): ?>
+<p style="margin: 0;"><a href="<?php echo $this->returnUrlToRedirect(); ?>" target="_blank">Link para pagamento</a></p>
+<?php else: ?>
+<p style="margin: 0;">Você será redirecionado para a página de pagameno após a confirmação da compra.</p>
+<?php endif; ?>
+<?php else: ?>
+<p style="margin: 0;"><?php echo $this->__('Código da transação: %s', $this->returnTransaction()) ?></p>
+<?php if($this->returnUrlToRedirect()): ?>
+<p style="margin: 0;"><a href="<?php echo $this->returnUrlToRedirect(); ?>" target="_blank">Link para pagamento</a></p>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php //$session = Mage::getSingleton('checkout/session'); ?>
+<?php //$session->unsUrlRedirect(); ?>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    
+    <default>
+        <reference name="head">
+            <action method="addItem" ifconfig="payment/paybrastef/unico"><type>skin_css</type><name>css/paybras/paybras.css</name></action>
+            <action method="addItem" ifconfig="payment/paybrastef/unico"><type>skin_js</type><name>js/paybras/prototype.maskedinput.js</name></action>
+			<action method="addItem" ifconfig="payment/paybrastef/unico"><type>skin_js</type><name>js/paybras/paybras.js</name></action>
+        </reference>
+    </default>
+    
+	<customer_account_index>
+        <reference name="customer_account_dashboard_top">
+            <action method="setTemplate" ifconfig="payment/paybrastef/unico"><template>xpd/paybrasboleto/sales/order/recent.phtml</template></action>
+        </reference>
+    </customer_account_index>
+	
+    <checkout_onepage_index>
+		<reference name="head">
+			<action method="addItem" ifconfig="payment/paybrasboleto/unico"><type>skin_js</type><name>js/paybras/paybras.js</name></action>
+		</reference>
+        <reference name="checkout.onepage.billing">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/persistent/checkout/onepage/billing.phtml</template></action>
+        </reference>
+        <reference name="checkout.onepage.shipping">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/checkout/onepage/shipping.phtml</template></action>
+        </reference>
+    </checkout_onepage_index>
+    
+    <customer_account_create>
+        <reference name="customer_form_register">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/persistent/customer/form/register.phtml</template></action>
+        </reference>
+		<reference name="head">
+			<action method="addItem" ifconfig="payment/paybrasboleto/unico"><type>skin_js</type><name>js/paybras/paybras.js</name></action>
+		</reference>
+    </customer_account_create>
+    
+	<customer_address_form>
+        <reference name="customer_address_edit">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/customer/address/edit.phtml</template></action>
+        </reference>
+    </customer_address_form>
+    
+    <sales_order_history translate="label">
+        <reference name="sales.order.history">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybras/sales/order/history.phtml</template></action>
+        </reference>
+    </sales_order_history>
+	
+    <checkout_onepage_success translate="label">
+        <reference name="root">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <reference name="checkout.success">
+                <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/checkout/success.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_onepage_success>
+	
+	<checkout_onepage_failure translate="label">
+		<reference name="root">
+            <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+            <reference name="checkout.failure">
+                <action method="setTemplate" ifconfig="payment/paybrasboleto/unico"><template>xpd/paybrasboleto/checkout/failure.phtml</template></action>
+            </reference>
+        </reference>
+    </checkout_onepage_failure>
+</layout>

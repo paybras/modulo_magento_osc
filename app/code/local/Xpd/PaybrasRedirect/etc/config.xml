@@ -1,0 +1,56 @@
+﻿<?xml version="1.0"?>
+<config>
+  <modules>
+    <Xpd_PaybrasRedirect>
+      <version>1.0.0</version>
+    </Xpd_PaybrasRedirect>
+  </modules>
+  <global>
+    <helpers>
+      <paybrasredirect>
+        <class>Xpd_PaybrasRedirect_Helper</class>
+      </paybrasredirect>
+    </helpers>
+	<models>
+	  <paybrasredirect>
+		<class>Xpd_PaybrasRedirect_Model</class>
+		<resourceModel>paybrasredirect_mysql4</resourceModel>
+	  </paybrasredirect>
+	</models>
+    <events>
+	  <controller_action_predispatch_checkout_onepage_index> <!-- identifier of the event we want to catch -->
+        <observers>
+          <controller_action_predispatch_checkout_onepage_index_handler> <!-- identifier of the event handler -->
+            <type>model</type> <!-- class method call type; valid are model, object and singleton -->
+            <class>paybrasredirect/observer</class> <!-- observers class alias -->
+            <method>reedit</method>  <!-- observer's method to be called -->
+            <args></args> <!-- additional arguments passed to observer -->
+          </controller_action_predispatch_checkout_onepage_index_handler>
+        </observers>
+      </controller_action_predispatch_checkout_onepage_index>
+      <controller_action_predispatch_onepagecheckout>
+        <observers>
+          <controller_action_predispatch_checkout_onepage_index_handler> <!-- identifier of the event handler -->
+            <type>model</type> <!-- class method call type; valid are model, object and singleton -->
+            <class>paybrasredirect/observer</class> <!-- observers class alias -->
+            <method>reedit</method>  <!-- observer's method to be called -->
+            <args></args> <!-- additional arguments passed to observer -->
+          </controller_action_predispatch_checkout_onepage_index_handler>
+        </observers>
+      </controller_action_predispatch_onepagecheckout>
+    </events>
+  </global>
+  <default>
+    <payment>
+        <paybrasmsgs>
+            <telinvalid>O telefone do seu endereço está incorreto. Por favor atualize antes de comprar.</telinvalid>
+            <cepinvalid>Seus dados de endereço estão desatualizados. Por favor atualize seu endereço antes de comprar.</cepinvalid>
+            <addressinvalid>Seus dados de endereço estão desatualizados. Por favor atualize seu endereço antes de comprar.</addressinvalid>
+            <cpfinvalid>Seu CPF/CNPJ está incorreto. Por favor atualize seus dados.</cpfinvalid>
+			<emailinvalid>Seu e-mail utilizado no cadastro não é válido. Por favor altere seus dados antes de comprar.</emailinvalid>
+			<celinvalid>Seu número de celular está incorreto. Por favor atualize seus dados antes de comprar.</celinvalid>
+			<dobinvalid>Sua data de nascimento é inválida. Por favor atualize seus dados antes de comprar.</dobinvalid>
+        </paybrasmsgs>
+    </payment>
+  </default>
+</config> 

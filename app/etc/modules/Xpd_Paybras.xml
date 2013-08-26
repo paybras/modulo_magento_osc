@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Xpd_Paybras>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Xpd_Paybras>
+    </modules>
+</config>

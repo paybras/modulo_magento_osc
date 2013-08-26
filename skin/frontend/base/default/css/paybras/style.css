@@ -1,0 +1,111 @@
+body{
+	outline-color: transparent;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input{
+	margin-bottom: 1px;
+	height: 26px;
+	font-size: 12px;
+}
+
+label.error{
+	font-size: 9px;
+	color: red;
+	font-style: italic;
+	margin-left: 5px;
+}
+
+.linhaVertical{
+	background:url(images/linhaCinza.gif);
+	background-repeat:repeat-y;
+	margin-top: 20px;
+	width: 5px;
+	float: left;
+}
+.linhaHorizontal{
+	background:url(images/linhaCinza.gif);
+	background-repeat:repeat-x;
+	width: auto;
+	height: 15px;
+	margin-top: 15px;
+}
+
+.control-group{
+	margin-left: 30px;
+	height: auto;
+}
+
+.row{
+	margin: 0 0 0 0;
+}
+
+.corpo{
+	border: 1px solid #DDD;
+	border-radius:1px;
+	height: auto
+}
+
+.texto{
+	font-size: 14px;
+	font-weight: bold;
+	color: #034b70;
+}
+
+.text-popover{
+	font-size: 8px;
+	margin-top: 20px;
+}
+
+.popover{
+	max-width: 800px;
+}
+
+.popover-title{
+	font-weight: bold;
+}
+
+.controls{
+	margin-top: 20px;
+	margin-left: 30px;
+}
+
+.tituloInput{
+	margin-top: 15px;
+	font-size: 12px;
+	font-weight: bold;
+
+}
+
+.invisivel{
+	visibility: hidden;
+	width: 0px;
+	height: 0px;
+}
+
+.ddd {
+	margin-bottom: 4px; 
+	height: 25px; 
+	width: 40px;
+}
+
+.phone {
+	margin-bottom: 4px; 
+	height: 25px; 
+	width: 150px;
+}
+
+.table th, .table td {
+	vertical-align: middle;
+}
+
+table{
+	font-size: 14px;
+	margin-left: 60px;
+}
+
+.table-bordered thead{
+	font-weight: bold;
+	background-color: #d8a727;
+}

@@ -1,0 +1,60 @@
+<?php
+/**
+ * Paybras
+ *
+ * @category   Payments
+ * @package    Xpd_Paybrastef
+ * @license    OSL v3.0
+ */
+ ?>
+<?php $additionaldata = unserialize($this->getInfo()->getData('additional_data')); ?>
+<?php if($additionaldata["forma_pagamento"] == 'cartao'):?>
+<p style="margin: 0;">Paybras</p>
+<p style="margin: 0;">Cartão de Crédito</p>
+<p style="margin: 0;"><?php echo $this->__('Name on the Card: %s', $this->htmlEscape($this->getInfo()->getCcOwner())) ?></p>
+<p style="margin: 0;"><?php echo $this->__('Credit Card Type: %s', $this->htmlEscape($this->getCcTypeName())) ?></p>
+<p style="margin: 0;"><?php echo $this->__('Credit Card Number: xxxx-%s', $this->htmlEscape($this->getInfo()->getCcLast4())) ?></p>
+<p style="margin: 0;"><?php echo $this->__('Expiration Date: %s/%s', $this->htmlEscape($this->getInfo()->getCcExpMonth()), $this->htmlEscape($this->getInfo()->getCcExpYear())) ?></p>
+<p style="margin: 0;"><?php echo $this->__('Número de Parcelas: %s', $additionaldata["cc_parcelas"]) ?></p>
+<?php if($this->returnTransaction()): ?>
+<p style="margin: 0;"><?php echo $this->__('Código da transação: %s', $this->returnTransaction()) ?></p>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php if($additionaldata["forma_pagamento"] == 'boleto'): ?>
+<p style="margin: 0;">Paybras</p>
+<p style="margin: 0;">Boleto Bancário</p>
+<?php if($this->getRequest()->getControllerName() != 'onepage' && $this->getRequest()->getControllerName() != 'onepagecheckout'): ?>
+<?php if($this->returnUrlToRedirect()): ?>
+<p style="margin: 0;"><a href="<?php echo $this->returnUrlToRedirect(); ?>" target="_blank">Segunda via</a></p>
+<?php endif; ?>
+<?php if($this->returnTransaction()): ?>
+<p style="margin: 0;"><?php echo $this->__('Código da transação: %s', $this->returnTransaction()) ?></p>
+<?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php if($additionaldata["forma_pagamento"] == 'tef_bb'): ?>
+<p style="margin: 0;">Paybras</p>
+<?php if($additionaldata["tef_banco"] == 'tef_bb'): ?>
+<p style="margin: 0;">TEF via Banco do Brasil</p>
+<?php endif; ?>
+<?php if($additionaldata["tef_banco"] == 'tef_itau'): ?>
+<p style="margin: 0;">TEF via Itaú</p>
+<?php endif; ?>
+<?php if($additionaldata["tef_banco"] == 'tef_bradesco'): ?>
+<p style="margin: 0;">TEF via Bradesco</p>
+<?php endif; ?>
+
+<?php if($this->getRequest()->getControllerName() != 'onepage' && $this->getRequest()->getControllerName() != 'onepagecheckout'): ?>
+<?php if($this->returnUrlToRedirect()): ?>
+<p style="margin: 0;"><a href="<?php echo $this->returnUrlToRedirect(); ?>" target="_blank">Link para pagamento</a></p>
+<?php endif; ?>
+<?php if($this->returnTransaction()): ?>
+<p style="margin: 0;"><?php echo $this->__('Código da transação: %s', $this->returnTransaction()) ?></p>
+<?php endif; ?>
+<?php endif; ?>
+<?php endif; ?>
+
+<?php //$session = Mage::getSingleton('checkout/session'); ?>
+<?php //$session->unsUrlRedirect(); ?>

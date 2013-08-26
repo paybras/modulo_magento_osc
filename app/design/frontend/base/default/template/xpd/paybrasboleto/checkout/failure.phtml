@@ -1,0 +1,20 @@
+﻿<?php
+/**
+ * Paybras
+ *
+ * @category   Payments
+ * @package    Xpd_Paybras
+ * @license    OSL v3.0
+ */
+ ?>
+ 
+<?php $session = Mage::getSingleton('core/session'); ?>
+<div class="page-title">
+    <h1><?php echo $this->__('Ocorreu um erro durante o pagamento') ?></h1>
+</div>
+<?php if ($session->getRealOrderId()) : ?><p><?php echo $this->__('Pedido ') . $session->getRealOrderId() ?></p><?php endif ?>
+<p>O status do seu pedido é: <?php echo $session->getStatusPag(); ?>.</p>
+<?php if ($error = $this->getErrorMessage()) : ?><p><?php echo $error ?></p><?php endif ?>
+<?php if ($error = $session->getMsgPaybrasErro()) : ?><p><?php echo $error ?></p><?php endif ?>
+<p><?php echo $this->__('Clique <a href="%s">aqui</a> para voltar para continuar comprando.', Mage::getBaseUrl()) ?></p>
+<?php $session->unsMsgPaybrasErro(); $session->clear(); ?>

@@ -1,0 +1,247 @@
+<?php
+/**
+ * Paybras
+ *
+ * @category   Payments
+ * @package    Xpd_Paybras
+ * @license    OSL v3.0
+ */
+ ?>
+
+<?php if(!Mage::getStoreConfig('payment/paybras/allvalidation')): ?>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/paybras/jquery.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/paybras/noConflict.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/paybras/bootstrap.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/paybras/scripts.js'); ?>"></script>
+<?php endif; ?>
+
+<?php Mage::getSingleton('customer/session')->setBeforeAuthUrl($this->getRequest()->getRequestUri());  //save requested URL for later redirection
+if(!Mage::getSingleton('customer/session')->isLoggedIn()) {  // if not logged in
+    header("Status: 301");
+    header('Location: '.$this->getUrl('customer/account/login')) ;  // send to the login page
+    exit; 
+} ?>
+<?php 
+$parcelamento = $this->getParcelas();
+$parcela_count = count($parcelamento); //var_dump($this->getParcelas());
+?>
+<script type="text/javascript">
+Event.observe(window, "load", function() {
+	new MaskedInput('input[name="cartao_portador_cpf"]', '999.999.999-99');
+	new MaskedInput('input[name="cartao_portador_telefone"]', '(99)99999999?9');
+	new MaskedInput('input[name="cartao_portador_data_nascimento"]', '99/99/9999');
+	maskcid = new MaskedInput('input[name="cartao_codigo_de_seguranca"]', '999');
+    
+	Validation.add('cpftitular','CPF Inválido',function(valueCPF) {
+	var cpf = valueCPF.replace(/[^\d]+/g,'');
+			if(cpf == '') return true;
+			while(cpf.length < 11) cpf = "0"+ cpf;
+			var expReg = /^0+$|^1+$|^2+$|^3+$|^4+$|^5+$|^6+$|^7+$|^8+$|^9+$/;
+			var a = [];
+			var b = new Number;
+			var c = 11;
+			for (i=0; i<11; i++){
+					a[i] = cpf.charAt(i);
+					if (i < 9) b += (a[i] * --c);
+			}
+			if ((x = b % 11) < 2) {
+					a[9] = 0
+			} 
+			else {
+					a[9] = 11-x
+			}
+
+			b = 0;
+			c = 11;
+
+			for (y=0; y<10; y++) b += (a[y] * c--);
+			if ((x = b % 11) < 2) {
+					a[10] = 0;
+			}
+			else {
+					a[10] = 11-x;
+			}
+			if ((cpf.charAt(9) != a[9]) || (cpf.charAt(10) != a[10]) || cpf.match(expReg)) return false;
+			return true;
+	});
+	
+	Validation.add('cccard','Cartão Inválido',function(ccnum) {
+		ccnum = ccnum.split("-").join("");
+	
+		var checksum = 0;
+		for (var i=(2-(ccnum.length % 2)); i<=ccnum.length; i+=2) {
+			checksum += parseInt(ccnum.charAt(i-1));
+		}
+		
+		for (var i=(ccnum.length % 2) + 1; i<ccnum.length; i+=2) {
+			var digit = parseInt(ccnum.charAt(i-1)) * 2;
+			if (digit < 10) { checksum += digit; } else { checksum += (digit-9); }
+		}
+		
+		if ((checksum % 10) == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	});
+});
+
+	
+</script>
+
+<style type="text/css">
+#cc .card-logo { height: 90px; }
+
+#cc .card-logo li { 
+    float: left;
+    text-align: center; 
+    margin-right: 0px !important;
+    height:75px;
+    vertical-align:bottom;
+    display:block;
+    position:relative;
+    width: 60px;
+}
+
+#cc .card-logo li label {
+    padding-left: 5px;
+}
+
+#cc .card-logo li .validation-advice {
+    position:absolute;
+    top:55px;
+    width:150px
+}
+
+#cc input[type="radio"] {
+	margin: 0 !important;
+}
+
+</style>
+<div class='row'>
+	<form id="repay-form" name="repay-form" action="<?php echo Mage::getBaseUrl() .'paybras/standard/repay'; ?>" method="post">
+	<div class="span7">
+		<div class="texto">Dados do Cartão</div>
+
+		<div class="control-group" style=''>
+			<label class='tituloInput'>Bandeira*</label>
+			<div id="cc">
+				<ul class="card-logo">
+        		<?php foreach ($this->getCcAvailableTypes() as $_typeCode => $_typeName): ?>
+        			<li id="li-card-<?php echo $_typeCode ?>" class="seleciona-bandeiras-cards">
+        				<label for="opt-<?php echo $_typeCode ?>"><img src="<?php echo $this->getSkinUrl('images/paybras/'.$_typeCode.'/'. $parcela_count .'x.gif') ?>" /></label>
+                        
+                        <input type="radio" class="radio" name="cc_type" id="opt-<?php echo $_typeCode ?>" value="<?php echo $_typeCode ?>" onclick="onCardChange(this);" style="display: none;"/>
+        			</li>
+        		<?php endforeach; ?>
+        		</ul>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class='tituloInput'>Nome do Titular* (como escrito no cartão)</label>
+			<input value="" name="cartao_portador_nome" class="required-entry" type="text" maxlength="50"/>
+		</div>
+		
+		<div class="control-group">
+			<label class='tituloInput'>Número*</label>
+			<input value='' id="paybras_cc_number" name="cartao_numero" class="cartao required-entry cccard" type="text" onfocus="mascara(this,numeros)" onblur="mascara(this,numeros);verifyType(this);" value="" maxlength="16" />
+		</div>
+		
+		<div class="control-group">
+			<label class='tituloInput'>Código de Segurança*</label>
+			<input value="" name="cartao_codigo_de_seguranca" id="paybras_cc_cid" class="codigoSeguranca required-entry" type="text" maxlength="4" style="margin-bottom: 4px; height: 25px; width: 55px;"/>
+			<a id="cartao_codigo_de_seguranca" rel="popover" data-html="true" data-title='Código de Segurança' data-content="
+				<html>
+					<div class='span6' style='font-size: 12px; margin-bottom: 15px;'>
+						<p>O código de segurança é uma sequência numérica complementar ao número do cartão de crédito que assegura a veracidade dos dados de uma transação eletrônica.</p>
+					</div>
+					<div class='row'>
+						<div class='span3' style='float: left;'>
+							<img src='<?php echo $this->getSkinUrl('images/paybras/codigoCartao.png'); ?>'></img>
+							<p style='margin-top: 10px; font-size: 13px; font-weight:bold;'>Para os Cartões Visa, Marcatercard, Dineers e Elo:</p>
+							<p style='font-size: 12px; margin-left: 10px;'>Informar os três números localizados no verso do cartão.</p>
+						</div>
+						<div class='span3' style='float: left;'>
+							<img src='<?php echo $this->getSkinUrl('images/paybras/codigoCartaoAmex.png'); ?>'></img>
+							<p style='margin-top: 10px; font-size: 13px; font-weight:bold;'>Para os Cartões American Express:</p>
+							<p style='font-size: 12px; margin-left: 10px;'>Informar os quatro números localizados na frente do cartão</p>
+						</div>
+					</div>
+				</html>">
+				<i class='icon-question-sign'></i></a>
+		</div>
+		
+		<div class="control-group">
+			<label class='tituloInput'>Validade*</label>
+			<select class="select2-input select2-focused required-entry" name="cartao_validade_mes" style="margin-bottom: 4px; height: 25px; width: 55px;">
+				<option value="01">01</option>
+				<option value="02">02</option>
+				<option value="03">03</option>
+				<option value="04">04</option>
+				<option value="05">05</option>
+				<option value="06">06</option>
+				<option value="07">07</option>
+				<option value="08">08</option>
+				<option value="09">09</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+			</select>
+			<select id='anoVencimento' class="select2-input select2-focused" name="cartao_validade_ano" style="margin-bottom: 4px; height: 25px; width: 70px;">
+				<?php for($i=0;$i<10;$i++){ ?>
+					<option value="<?php echo date('y')+$i;?>"><?php echo date('Y')+$i;?></option>
+				<?php } ?>
+			</select>
+		</div>
+        
+        <div id="dados-extras">
+    		<div class="texto">Dados do Dono do Cartão</div>
+            
+    		<div class="control-group ">
+    			<label class='tituloInput'>CPF do Dono do Cartão</label>
+    			<input name="cartao_portador_cpf" class="cpf cpftitular" type="text" style="margin-bottom: 4px; height: 25px; width: 150px;"/>
+    		</div>
+    		
+            <?php if(Mage::getStoreConfig('payment/paybras/inputdob')): ?>
+    		<div class="control-group">
+    			<label class='tituloInput'>Data de Nascimento</label>
+    			<input name="cartao_portador_data_nascimento" class="data" type="text" style="margin-bottom: 4px; height: 25px; width: 150px;" maxlength="10"/>
+    		</div>
+    		<?php endif; ?>
+            
+    		<div class="control-group">
+    			<label class='tituloInput'>Telefone</label>
+    			<input name="cartao_portador_telefone" class="phone" type="text" style="margin-bottom: 4px; height: 25px; width: 150px;"/>
+    		</div>
+        </div>
+	</div>
+	<div id='opcaoParcelamento' class='span4'>
+		<div class='texto' style='margin-top: 30px;'>Opções de Parcelamento</div>
+		<div class="input-box">
+		<table class="table table-striped" style="margin-top: 20px; max-width: 200px; margin-left: 0px;"> 
+			<?php $j=1; foreach($parcelamento as $parcela): ?>
+				<?php if($j == 1): ?>
+					<tr><td><label class='radio required-entry'><input type='radio' checked name='cartao_parcelas' value='<?php echo $j; ?>' /> <?php echo 'À vista - '.$this->helper('checkout')->formatPrice($parcela); ?></label></td></tr>
+				<?php else: ?>
+					<tr><td><label class='radio required-entry'><input type='radio' checked name='cartao_parcelas' value='<?php echo $j; ?>' /> <?php echo $j.'x - '.$this->helper('checkout')->formatPrice($parcela); ?></label></td></tr>
+				<?php endif; ?>
+				<?php $j+=1; ?>
+			<?php endforeach; ?>
+		</tbody></table>
+			
+		</div>
+	</div>
+	<div class="buttons-set">
+        <p class="required"><?php echo $this->__('* Required Fields') ?></p>
+        <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+        <button type="submit" title="<?php echo $this->__('Pagar') ?>" class="button"><span><span><?php echo $this->__('Efetuar Pagamento') ?></span></span></button>
+		<!--input class="btn btn-primary" type="submit" value="Efetuar Pagamento"-->
+    </div>
+	</form>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var repayform = new VarienForm('repay-form', true);
+//]]>   
+</script>

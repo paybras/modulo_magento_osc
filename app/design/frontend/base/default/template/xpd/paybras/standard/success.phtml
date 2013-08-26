@@ -1,0 +1,31 @@
+<div class="page-title">
+    <h1><?php echo $this->__('Seu pagamento foi efetuado.') ?></h1>
+</div>
+
+<?php /** Início Alteração Paybras */ ?>
+<?php $session = Mage::getSingleton('core/session'); ?>
+<?php $orderId = $session->getOrderId(); ?>
+<?php $order = Mage::getModel('sales/order')->load($orderId); ?>
+<?php //$order = Mage::getModel('sales/order')->loadByIncrementId($orderId); ?>
+<?php if($session->getFormaPag() == "cartao"): ?>
+    <?php if($order->getState() == 'holded' || $order->getState() == 'hold'): ?>
+	<p>O status do seu pedido é: <?php echo $session->getStatusPag(); ?>. Assim que seu pagamento for processado, você será notificado.</p>
+    <?php endif; ?>
+<?php endif; ?>
+ <?php if($session->getFormaPag() == "boleto"): ?>
+	<center>
+	<button type="button" class="button" onclick="window.open('<?php echo $session->getUrlRedirect(); ?>')"><img src="<?php echo($this->getSkinUrl('images/paybras/boleto.gif')) ?>" /></button><br /><br />
+	</center>
+	<p>O status do seu pedido é: <?php echo $session->getStatusPag(); ?>.</p>
+	<p>Em alguns instantes você será redirecionado para seu Boleto, onde poderá imprimí-lo</p>
+<?php endif; ?>
+<?php if($session->getFormaPag() == "tef_bb"): ?>
+	<center>
+	<button type="button" class="button" onclick="window.open('<?php echo $session->getUrlRedirect(); ?>')"><img src="<?php echo($this->getSkinUrl('images/paybras/tef.gif')) ?>" /></button><br /><br />
+	</center>
+	<p>O status do seu pedido é: <?php echo $session->getStatusPag(); ?>.</p>
+	<p>Em alguns instantes você será redirecionado para a página do Banco do Brasil.</p>
+<?php endif; ?>
+<?php /** Fim Alteração Paybras */?>
+
+<p><?php echo $this->__('Clique <a href="%s">aqui</a> para voltar para nossa página principal', Mage::getBaseUrl()) ?></p>

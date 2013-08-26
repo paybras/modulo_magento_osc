@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Xpd_PaybrasRedirect>
+      <active>true</active>
+      <codePool>local</codePool>
+      <version>1.0.0</version>
+    </Xpd_PaybrasRedirect>
+  </modules>
+</config>
