@@ -40,11 +40,11 @@
         </reference>
     </checkout_onepage_index>
     
-    <sales_order_history translate="label">
+    <!--sales_order_history translate="label">
         <reference name="sales.order.history">
             <action method="setTemplate" ifconfig="payment/paybras/allvalidation"><template>xpd/paybras/sales/order/history.phtml</template></action>
         </reference>
-    </sales_order_history>
+    </sales_order_history-->
     
     <customer_account_create>
         <reference name="customer_form_register">

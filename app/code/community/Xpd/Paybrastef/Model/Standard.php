@@ -197,7 +197,14 @@ class Xpd_Paybrastef_Model_Standard extends Mage_Payment_Model_Method_Abstract {
         $fields['pagador_celular_ddd'] = substr($celular,0,2);
         $fields['pagador_celular'] = substr($celular,2);
         
-        $fields['pagador_sexo'] = $order->getCustomerGender() ? $order->getCustomerGender() : $order->getCustomer()->getGender();
+        if($order->getCustomer()) {
+            $genderCustomer = $order->getCustomer()->getGender();
+        }
+        else {
+            $genderCustomer = '';
+        }
+        
+        $fields['pagador_sexo'] = $order->getCustomerGender() ? $order->getCustomerGender() : $genderCustomer;
         
         switch((int)$fields['pagador_sexo']) {
             case 1: $fields['pagador_sexo'] = 'M'; break;
