@@ -219,7 +219,7 @@ function verifyType(element) {
         $('paybras_cc_cid').setAttribute('maxlength', 3);
         maskcid.unmask().mask('999');
         
-        if((/^(636368|504175|438935|451416|636297)/).test(ccnum) && ccnum.length == 16) {
+        if(ccnum.length == 16) {
             $('opt-elo').checked = true;
             $('opt-elo').previous(0).addClassName('selecionada');
         }
